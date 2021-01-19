@@ -19,7 +19,8 @@ body,html {
     height: 95%;
     border-style: solid;
     border-width: 1px;
-    font-family: 'Arial';
+    font-family: Consolas, 'Courier New', monospace;
+    overflow: scroll;
 }
 
 textarea {

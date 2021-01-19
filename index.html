@@ -6,11 +6,18 @@
     <title>Diff</title>
 </head>
 <body>
-    <textarea id="input1" name="input1">Let's diff this text!</textarea>
-    <textarea id="input2" name="input2">Let us diff these texts!</textarea>
+    <b>Compare by</b>
+    <input type="radio" id="character" name="mode" value="character" checked>
+    <label for="character">Character</label>
+    <input type="radio" id="word" name="mode" value="word">
+    <label for="word">Word</label>
+    <input type="radio" id="line" name="mode" value="line">
+    <label for="line">Line</label><br>
+    <textarea id="input1" name="input1">What is the difference between these two texts?</textarea>
+    <textarea id="input2" name="input2">Is there a difference between them?</textarea>
     <div id="output"></div>
 </body>
 <link rel="stylesheet" href="index.css">
-<script src="Diff.js"></script>
+<script src="diff.js"></script>
 <script src="index.js"></script>
 </html>
