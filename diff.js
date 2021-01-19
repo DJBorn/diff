@@ -1,3 +1,4 @@
+// Get edit script between two strings/arrays
 function diff(A, B) {
     // Create an array of objects, each object at index d represents all the farthest k distances at d. Initialize d = 0 as k = 0
     let V = [{0:0}],
