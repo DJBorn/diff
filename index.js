@@ -76,7 +76,7 @@ function compare() {
     if(mode === "character")
         input1Arr = input1Arr.join("");
     else if(mode === "word") {
-        input1Arr = input1Arr.join(" ");
+        input1Arr = input1Arr.join("&nbsp;");
     }
     else if(mode === "line")
         input1Arr = input1Arr.join("\n");
