@@ -15,8 +15,30 @@ function compare() {
         input2Arr = input2.split("");
     }
     else if(mode === "word") {
-        input1Arr = input1.split(" ");
-        input2Arr = input2.split(" ");
+        input1Arr = [];
+        input2Arr = [];
+        input1ArrTemp = input1.split("\n");
+        input2ArrTemp = input2.split("\n");
+
+        console.log(input1Arr);
+
+        for(let i = 0; i < input1ArrTemp.length; i++) {
+            input1ArrTemp[i] += "\n";
+            input1Arr = input1Arr.concat(input1ArrTemp[i].split(" "));
+        }
+
+        for(let i = 0; i < input2ArrTemp.length; i++) {
+            input2ArrTemp[i] += "\n";
+            input2Arr = input2Arr.concat(input2ArrTemp[i].split(" "));
+        }
+
+        console.log(input1Arr);
+
+
+        // input1Arr = input1.split(" ");
+        // input2Arr = input2.split(" ");
+
+        
         // input1Arr = [];
         // input2Arr = [];
         // let curWord = "";
@@ -80,6 +102,8 @@ function compare() {
     }
     else if(mode === "line")
         input1Arr = input1Arr.join("\n");
+        
+    console.log(input1Arr);
         
     input1Arr = input1Arr.split("\n");
 
