@@ -88,9 +88,9 @@ function diff(A, B) {
     // Generate edit script based on the generated optimal path
     for(let i = 1; i < path.length; i++) {
         if(path[i].startX < path[i].midX && path[i].startY == path[i].midY)
-            editScript.unshift({command: "D", index: path[i].startX});
+            editScript.push({command: "D", index: path[i].startX});
         else if(path[i].startX == path[i].midX && path[i].startY < path[i].midY)
-            editScript.unshift({command: "I", insertIndex: path[i].startX, sourceIndex: path[i].startY})
+            editScript.push({command: "I", insertIndex: path[i].startX, sourceIndex: path[i].startY})
     }
     return editScript;
 }
