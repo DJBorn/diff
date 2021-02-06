@@ -1,14 +1,19 @@
 body,html {
     margin: 0;
-    padding: 0;
     height: 100vh;
+}
+
+body {
+    padding: 10px;
+    box-sizing: border-box;
 }
 
 #input1, #input2 {
     float: left;
     margin: 3px;
-    width: 30%;
+    width: 32%;
     height: 95%;
+    box-sizing: border-box;
 }
 
 #output {

@@ -14,49 +14,93 @@ function compare() {
     input2Arr = replaceWithHTMLEncoding(input2Arr);
 
     // Get edit script of the two arrays
-    let changes = diff(input1Arr, input2Arr);
-    console.log(changes);
+    let editScript = diff(input1Arr, input2Arr);
     
-    for(let i = 0; i < changes.length; i++) {
-        if(changes[i].command === "I") {
-            let replacementChar = input2Arr[changes[i].sourceIndex];
-            input1Arr.splice(changes[i].insertIndex, 0, "<mark class=\"green\">" + replacementChar + "</mark>");
-        }
-        if(changes[i].command === "D") {
-            let replacementChar = input1Arr[changes[i].index];
-            input1Arr[changes[i].index] = "<mark class=\"red\">" + replacementChar + "</mark>";
-        }
-    }
+    // Create new array after applying edit script
+    let outputArr = processEditScript(input1Arr, input2Arr, editScript, mode);
+    
+    // Generate the final HTML output
+    outputArr = generateHTMLString(outputArr, mode);
+    
+    document.getElementById("output").innerHTML = outputArr;
+}
 
-    // for(let i = 0; i < changes.length; i++) {
-    //     if(changes[i].command === "I") {
-    //         let replacementChar = input2Arr[changes[i].sourceIndex];
-    //         input1Arr.splice(changes[i].insertIndex, 0, "<mark class=\"green\">" + replacementChar + "</mark>");
-    //     }
-    //     if(changes[i].command === "D") {
-    //         let replacementChars = [input1Arr[changes[i].index]];
-    //         let isDeletingNextChar = changes[i+1].command == "D" && changes[i].index == changes[i+1].index - 1;
-    //         while(isDeletingNextChar) {
-    //             i++;
-    //             replacementChars.push(index1Arr[changes[i].index]);
-    //             isDeletingNextChar = changes[i+1].command == "D" && changes[i].index == changes[i+1].index - 1;
-    //         }
-    //         input1Arr[changes[i].index] = "<mark class=\"red\">" + replacementChar + "</mark>";
-    //     }
-    // }
+// Generate the final HTML string based on the mode
+function generateHTMLString(arr, mode) {
     
     if(mode === "character")
-        input1Arr = input1Arr.join("");
-    else if(mode === "word") {
-        input1Arr = input1Arr.join("");
-    }
+        arr = arr.join("");
+    else if(mode === "word")
+        arr = arr.join("");
     else if(mode === "line")
-        input1Arr = input1Arr.join("\n");
+        arr = arr.join("\n");
         
-    input1Arr = input1Arr.split("\n");
+    return arr.split("\n").join('<br>');
+}
+
+// Generate the new string after applying all of the changes in the given editScript
+function processEditScript(arr1, arr2, editScript, mode) {
+    let outputArr = [];
+    let deletedArr = [];
+    let insertedArr = [];
+    let startedInserting = false;
+    let startedDeleting = false;
+
+    let insertIndex = -1;
+    let insertString = [];
+
+    for(let i = 0; i < editScript.length; i++) {
+        if(editScript[i].command == "I") {
+            if(!startedInserting) {
+                startedInserting = true;
+                insertIndex = editScript[i].insertIndex;
+                insertString.push(arr2[editScript[i].sourceIndex])
+            } else if(startedInserting && editScript[i].insertIndex == insertIndex) {
+                insertString.push(arr2[editScript[i].sourceIndex]);
+            } else if (startedInserting){
+                insertedArr[insertIndex] = mode == "line" ? insertString.join('\n') : insertString.join('');
+                insertIndex = editScript[i].insertIndex;
+                insertString = [arr2[editScript[i].sourceIndex]];
+            } 
+        }
+        
+        if((editScript[i].command != "I" && startedInserting) || (startedInserting && i == editScript.length - 1)) {
+            insertedArr[insertIndex] = mode == "line" ? insertString.join('\n') : insertString.join('');
+            insertString = [];
+            startedInserting = false;
+        }
+
+        if(editScript[i].command == "D")
+            deletedArr[editScript[i].index] = arr1[editScript[i].index];
+    }
     
-    document.getElementById("output").innerHTML = input1Arr.join('<br>');
+    for(let i = 0; i < Math.max(arr1.length, arr2.length); i++) {
+        let newStringAtIndex = [];
+
+        if((deletedArr[i] == null && startedDeleting) || (startedDeleting && i == arr1.length-1)) {
+            startedDeleting = false;
+            newStringAtIndex.push("</mark>");
+        }
+        if(insertedArr[i] != null) {
+            newStringAtIndex.push("<mark class=\"green\">" + insertedArr[i] + "</mark>");
+            if(mode == "line")
+                newStringAtIndex.push("\n");
+        }
+        if(deletedArr[i] != null) {
+            if(!startedDeleting) {
+                startedDeleting = true;
+                newStringAtIndex.push("<mark class=\"red\">" + arr1[i]);
+            } else {
+                newStringAtIndex.push(arr1[i]);
+            }
+        }
+        if(deletedArr[i] == null)
+            newStringAtIndex.push(arr1[i]);
+
+        outputArr.push(newStringAtIndex.join(''));
+    }
     
+    return outputArr;
 }
 
 // Replace each character in each string of an array with the HTML encoding
